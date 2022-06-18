@@ -11,6 +11,7 @@ from copy import copy
 from .common.constants import IP, PORT, HEADER_SIZE
 from .weblib.fetch import fetch_data
 from .common.base import Client
+from .videolib.convertor import parse_png_to_mpeg2ts_stream
 
 import platform
 import requests
@@ -255,6 +256,8 @@ def download_thread(file_path: str, link: str, session: requests.Session,
         session = s_queue.get()
 
     done_url = fetch_data(link, session, 120, file_path, http2)
+    if not parse_png_to_mpeg2ts_stream(file_path):
+      done_url = link
 
     if http2 and session:
         s_queue.put(session)

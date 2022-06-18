@@ -1,5 +1,6 @@
 import subprocess
 import os
+import time
 
 
 def concat_all_ts(video_file: str) -> None:
@@ -48,7 +49,6 @@ def get_ts_start_time(file_path: str) -> float:
     float
         The start time of the .ts file located at file_path
     """
-    parse_png_to_mpeg2ts_stream(file_path)
     return float(os.path.split(file_path)[-1])
 
 
@@ -64,5 +64,9 @@ def parse_png_to_mpeg2ts_stream(file_path: str) -> None:
     """
     cmd = "ffmpeg -y -f mpegts -i {} -c copy {}.ts -v quiet".format(file_path, file_path)
     subprocess.Popen(cmd, shell=True).wait()
+    file_path_ts = f"{file_path}.ts"
     os.unlink(file_path)
-    os.rename(f"{file_path}.ts", file_path)
+    if os.path.exists(file_path_ts):
+        os.rename(file_path_ts, file_path)
+        return True
+    return False

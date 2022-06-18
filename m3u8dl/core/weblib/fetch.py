@@ -43,13 +43,12 @@ def fetch_data(download_url: str, session: requests.Session,
                 request_data = redirect_handler(session, request_data)
 
             file = open(file_path, "ab")
-
             for chunk in request_data.iter_content(10485760):
                 if not chunk:
                     break
 
                 file.write(chunk)
-            
+            file.flush()
             file.close()
 
     except (ConnectionResetError, ConnectionRefusedError, ConnectionError,
